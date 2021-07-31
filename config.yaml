@@ -1,11 +1,15 @@
 # arxivの学問領域の指定
-subject: 'cat:cs.*'
+subject: 'cat:cond-mat.* OR cat:physics.*'
 
 # 検索キーワード
 keywords:
-        kaggle: 3
-        resnet: 3
-        anomaly detection: 1
+        kitaev: 3
+        high harmonic generation: 3
+        graphene: 3
+        master equation: 3
+        nonlinear: 1
+        thz: 1
+        laser: 1
 
 # 通知の閾値
-score_threshold: 0
+score_threshold: 1
