@@ -11,6 +11,7 @@ keywords:
         nonlinear: 1
         thz: 1
         laser: 1
+        floquet: 1
 
 # 通知の閾値
 score_threshold: 1
