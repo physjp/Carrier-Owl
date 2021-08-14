@@ -4,6 +4,8 @@ subject: 'cat:cond-mat.* OR cat:physics.*'
 # 検索キーワード
 keywords:
         kitaev: 3
+        HHG: 3
+        high-harmonic generation: 3
         high harmonic generation: 3
         harmonic generation: 2
         graphene: 3
