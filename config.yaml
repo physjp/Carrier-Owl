@@ -16,6 +16,7 @@ keywords:
         thz: 1
         laser: 1
         floquet: 1
+        stm: 1
 
 # 通知の閾値
 score_threshold: 1
