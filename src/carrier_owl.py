@@ -21,8 +21,10 @@ warnings.filterwarnings('ignore')
 @dataclass
 class Result:
     url: str
-    title: str
-    abstract: str
+    title_en: str
+    title_ja: str
+    abstract_en: str
+    abstract_ja: str
     words: list
     score: float = 0.0
 
@@ -56,7 +58,7 @@ def search_keyword(
             # abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
             # abstract_trans = '\n'.join(abstract_trans)
             result = Result(
-                    url=url, title=title_trans, abstract=abstract_trans,
+                    url=url, title_en=title, title_ja=title_trans, abstract_en=abstract, abstract_ja=abstract_trans,
                     score=score, words=hit_keywords)
             results.append(result)
     return results
@@ -86,17 +88,22 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
     # descending
     for result in sorted(results, reverse=True, key=lambda x: x.score):
         url = result.url
-        title = result.title
-        abstract = result.abstract
+        title_en = result.title_en
+        title_ja = result.title_ja
+        abstract_en = result.abstract_en
+        abstract_ja = result.abstract_ja
         word = result.words
         score = result.score
 
         text = f'\n score: `{score}`'\
                f'\n hit keywords: `{word}`'\
                f'\n url: {url}'\
-               f'\n title:    {title}'\
+               f'\n title:    {title_en}'\
+               f'\n title_DeepL:    {title_ja}'\
                f'\n abstract:'\
-               f'\n \t {abstract}'\
+               f'\n \t {abstract_en}'\
+               f'\n abstract_DeepL:'\
+               f'\n \t {abstract_ja}'\
                f'\n {star}'
 
         send2app(text, slack_id, line_token)
@@ -167,7 +174,8 @@ def main():
     keywords = config['keywords']
     score_threshold = float(config['score_threshold'])
 
-    day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
+#     day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
+    day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=1)
     day_before_yesterday_str = day_before_yesterday.strftime('%Y%m%d')
     # datetime format YYYYMMDDHHMMSS
     arxiv_query = f'({subject}) AND ' \
