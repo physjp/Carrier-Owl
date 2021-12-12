@@ -21,6 +21,7 @@ warnings.filterwarnings('ignore')
 @dataclass
 class Result:
     url: str
+    author: str
     title_en: str
     title_ja: str
     abstract_en: str
@@ -49,6 +50,7 @@ def search_keyword(
     for article in articles:
         url = article['arxiv_url']
         title = article['title']
+        author = article['authors']
         abstract = article['summary']
         score, hit_keywords = calc_score(abstract, keywords)
         if (score != 0) and (score >= score_threshold):
@@ -58,7 +60,7 @@ def search_keyword(
             # abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
             # abstract_trans = '\n'.join(abstract_trans)
             result = Result(
-                    url=url, title_en=title, title_ja=title_trans, abstract_en=abstract, abstract_ja=abstract_trans,
+                    url=url, author=author, title_en=title, title_ja=title_trans, abstract_en=abstract, abstract_ja=abstract_trans,
                     score=score, words=hit_keywords)
             results.append(result)
     return results
@@ -88,6 +90,7 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
     # descending
     for result in sorted(results, reverse=True, key=lambda x: x.score):
         url = result.url
+        author = result.author
         title_en = result.title_en
         title_ja = result.title_ja
         abstract_en = result.abstract_en
@@ -100,6 +103,7 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
                f'\n url: {url}'\
                f'\n title:    {title_en}'\
                f'\n title_DeepL:    {title_ja}'\
+               f'\n author: {author}'\
                f'\n abstract:'\
                f'\n \t {abstract_en}'\
                f'\n abstract_DeepL:'\
