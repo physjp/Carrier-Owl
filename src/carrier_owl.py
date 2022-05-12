@@ -62,9 +62,9 @@ def search_keyword(
         abstract = article['summary']
         score, hit_keywords = calc_score(abstract, keywords)
         if (score != 0) and (score >= score_threshold):
-            title_trans = get_translated_text('ja', 'en', title)
+            title_trans = get_translated_text('ja', 'en', title, driver)
             abstract = abstract.replace('\n', '')
-            abstract_trans = get_translated_text('ja', 'en', abstract)
+            abstract_trans = get_translated_text('ja', 'en', abstract, driver)
             # abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
             # abstract_trans = '\n'.join(abstract_trans)
             result = Result(
@@ -124,7 +124,7 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
         send2app(text, slack_id, line_token)
 
 
-def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
+def get_translated_text(from_lang: str, to_lang: str, from_text: str, driver) -> str:
     '''
     https://qiita.com/fujino-fpu/items/e94d4ff9e7a5784b2987
     '''
