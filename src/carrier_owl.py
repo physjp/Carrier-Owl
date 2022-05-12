@@ -1,6 +1,6 @@
-from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options
 import os
 import time
 import yaml
@@ -46,6 +46,14 @@ def search_keyword(
         articles: list, keywords: dict, score_threshold: float
         ) -> list:
     results = []
+    
+    # ヘッドレスモードでブラウザを起動
+    options = Options()
+    options.add_argument('--headless')
+
+    # ブラウザーを起動
+    driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=options)
+    
 
     for article in articles:
         url = article['arxiv_url']
@@ -63,6 +71,9 @@ def search_keyword(
                     url=url, author=author, title_en=title, title_ja=title_trans, abstract_en=abstract, abstract_ja=abstract_trans,
                     score=score, words=hit_keywords)
             results.append(result)
+    
+    # ブラウザ停止
+    driver.quit()
     return results
 
 
@@ -127,12 +138,6 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     url = 'https://www.deepl.com/translator#' \
         + from_lang + '/' + to_lang + '/' + from_text
 
-    # ヘッドレスモードでブラウザを起動
-    options = Options()
-    options.add_argument('--headless')
-
-    # ブラウザーを起動
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
     driver.get(url)
     driver.implicitly_wait(10)  # 見つからないときは、10秒まで待つ
 
@@ -144,9 +149,6 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
 
         if to_text:
             break
-
-    # ブラウザ停止
-    driver.quit()
     return to_text
 
 
